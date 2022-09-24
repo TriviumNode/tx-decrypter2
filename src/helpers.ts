@@ -10,9 +10,9 @@ export let pulsarWalletAddress: string;
 export const TextDecoder = textEncoding.TextDecoder;
 
 export interface MessageDetails {
-  contract: string;
+  contract?: string;
   msg: any;
-  contract_info: ContractInfo;
+  contract_info?: ContractInfo;
   sent_funds: any;
   data_response?: any;
 }
@@ -65,44 +65,67 @@ export const getPulsarClient = async () => {
   pulsarWalletAddress = pulsarAddress;
 };
 
-export const processMessages = async (result: Tx, client: SecretNetworkClient) => {
+export const processMessages = async (
+  result: Tx,
+  client: SecretNetworkClient
+) => {
   const messages: MessageDetails[] = [];
-
   for (let i = 0; i < result.tx.body.messages.length; i++) {
     const message = result.tx.body.messages[i];
 
     if (message.typeUrl !== '/secret.compute.v1beta1.MsgExecuteContract')
       continue;
 
-    // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
-    //@ts-ignore
-    const messageLog = result.jsonLog[i].events.find(
-      (a) => (a.type = 'message')
-    )?.attributes;
-    const contractAddress = messageLog?.find(
-      (a) => a.key === 'contract_address'
-    )?.value;
+    const newMsg = message.value.msg;
+    const keys = Object.keys(newMsg)
+    console.log(newMsg[keys[0]]);
+    if (Object.keys(newMsg[keys[0]]).includes('msg')){
+      console.log();
+      try {
+        const decoded = atob(newMsg[keys[0]].msg);
+        newMsg[keys[0]].decoded_msg = decoded;
 
-    if (!contractAddress) throw new Error('Something went wrong');
+        const decodedJson = JSON.parse(decoded);
+        newMsg[keys[0]].decoded_msg = decodedJson;
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-    const info = await client.query.compute.contractInfo(contractAddress);
 
-    let dstring;
-    if (result.data[i]?.length)
-      dstring = fromUtf8(
-        MsgExecuteContractResponse.decode(result.data[i]).data
-      );
+    if (result.code) {
+      messages.push({
+        msg: message.value.msg,
+        sent_funds: message.value.sentFunds,
+      });
+    } else {
+      // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
+      //@ts-ignore
+      const messageLog = result.jsonLog[i].events.find(
+        (a) => (a.type = 'message')
+      )?.attributes;
+      const contractAddress = messageLog?.find(
+        (a) => a.key === 'contract_address'
+      )?.value;
 
-    messages.push({
-      contract: contractAddress,
-      msg: message.value.msg,
-      contract_info: info.ContractInfo,
-      sent_funds: message.value.sentFunds,
-      data_response: dstring && JSON.parse(dstring),
-    });
+      if (!contractAddress) throw new Error('Couldnt get contract address jsonLogs');
 
-    //const castring = MsgExecuteContractResponse.decode(message.value.sender);
-    //console.log(castring);
+      const info = await client.query.compute.contractInfo(contractAddress);
+
+      let dstring;
+      if (result.data[i]?.length)
+        dstring = fromUtf8(
+          MsgExecuteContractResponse.decode(result.data[i]).data
+        );
+
+      messages.push({
+        contract: contractAddress,
+        msg: message.value.msg,
+        contract_info: info.ContractInfo,
+        sent_funds: message.value.sentFunds,
+        data_response: dstring && JSON.parse(dstring),
+      });
+    }
   }
 
   return messages;

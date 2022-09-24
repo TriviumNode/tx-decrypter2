@@ -1,6 +1,14 @@
 import React, { FormEvent, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Accordion, Button, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
+import {
+  Accordion,
+  Button,
+  Col,
+  Container,
+  Form,
+  Row,
+  Spinner,
+} from 'react-bootstrap';
 import { Tx } from 'secretjs';
 import { toast } from 'react-toastify';
 import ReactJson from 'react-json-view';
@@ -102,10 +110,15 @@ function App() {
                 onChange={(e) => setTxHash(e.target.value)}
               />
             </Form.Group>
-            <Row>
+            <Row className="justify-content-end">
               <Col xs="auto">
-                <Button variant="primary" type="submit" onClick={handleDecrypt} disabled={loading}>
-                  Decrypt {loading && <Spinner animation="border" size="sm"/>}
+                <Button
+                  variant="primary"
+                  type="submit"
+                  onClick={handleDecrypt}
+                  disabled={loading}
+                >
+                  Decrypt {loading && <Spinner animation="border" size="sm" />}
                 </Button>
               </Col>
               {/* <Col xs="auto">
@@ -120,7 +133,7 @@ function App() {
           </Form>
         </Col>
       </Row>
-      <Row className="mt-2 text-center">
+      <Row className="mt-4 text-center">
         <Col xs={{ span: 12, offset: 0 }} md={{ span: 10, offset: 1 }}>
           <h5>
             Values will only be decrypted if you were the original sender and
@@ -133,8 +146,13 @@ function App() {
         </Col>
       </Row>
 
+      {!!hashResult?.code && <Row  className="mt-4">
+        <h3>Transaction Error:</h3>
+        <ReactJson src={hashResult?.jsonLog as object} name="Error Log" />
+        </Row>}
+
       {!!messageDetails.length && (
-        <Row className="my-4">
+        <Row className="mt-4">
           <h3>Contract Execution Messages</h3>
           <h6 className="mx-2">
             Non-contract messages are not shown in this section.
@@ -144,7 +162,8 @@ function App() {
               return (
                 <Accordion.Item eventKey={i.toString()}>
                   <Accordion.Header>
-                    Message #{i + 1} - {a.contract_info.label}
+                    Message #{i + 1}{' '}
+                    {!!a.contract_info?.label && <>- {a.contract_info.label}</>}
                   </Accordion.Header>
                   <Accordion.Body>
                     <Row className="my-1 mx-4 d-inline-block">
@@ -154,15 +173,21 @@ function App() {
                       {a.contract}
                     </Row>{' '}
                     <br />
-                    <Row className="my-1 mx-4 d-inline-block">
-                      <span style={{ fontWeight: '600' }}>Contract Label:</span>{' '}
-                      {a.contract_info.label}
-                    </Row>
+                    {!!a.contract_info?.label && (
+                      <>
+                        <Row className="my-1 mx-4 d-inline-block">
+                          <span style={{ fontWeight: '600' }}>
+                            Contract Label:
+                          </span>{' '}
+                          {a.contract_info.label}
+                        </Row>
+                      </>
+                    )}
                     {!ArrayBuffer.isView(a.msg) && (
                       <Row className="mt-4 mb-2 mx-3">
                         <ReactJson
                           src={a.msg}
-                          collapsed={true}
+                          collapsed={false}
                           name="Request Message"
                         />
                       </Row>
@@ -187,7 +212,7 @@ function App() {
       )}
 
       {!!hashResult && (
-        <Row>
+        <Row className="mt-4">
           <h3>Full Transaction</h3>
           <ReactJson src={hashResult} />
         </Row>
