@@ -55,7 +55,7 @@ function App() {
       if (result) setHashResult(result);
       else throw new Error('No Result Returned');
 
-      const messages = await processMessages(result);
+      const messages = await processMessages(result, client);
       setMessageDetails(messages);
       setLoading(false);
     } catch (error: any) {

@@ -65,7 +65,7 @@ export const getPulsarClient = async () => {
   pulsarWalletAddress = pulsarAddress;
 };
 
-export const processMessages = async (result: Tx) => {
+export const processMessages = async (result: Tx, client: SecretNetworkClient) => {
   const messages: MessageDetails[] = [];
 
   for (let i = 0; i < result.tx.body.messages.length; i++) {
@@ -85,7 +85,7 @@ export const processMessages = async (result: Tx) => {
 
     if (!contractAddress) throw new Error('Something went wrong');
 
-    const info = await secretJs.query.compute.contractInfo(contractAddress);
+    const info = await client.query.compute.contractInfo(contractAddress);
 
     let dstring;
     if (result.data[i]?.length)
