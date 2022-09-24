@@ -1,0 +1,28 @@
+{
+    "plugins": ["react", "prettier"],
+    "extends": ["react-app", "standard-with-typescript", "prettier"],
+    "rules": {
+      "prettier/prettier": [
+        "warn",
+        {
+          "singleQuote": true
+        }
+      ],
+      "react/jsx-filename-extension": [
+        "warn",
+        {
+          "extensions": [".tsx", ".jsx"]
+        }
+      ],
+      "no-var": "warn",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/strict-boolean-expressions": "off",
+      "@typescript-eslint/no-misused-promises": "off",
+      "@typescript-eslint/no-floating-promises": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "spaced-comment": "off"
+    },
+    "parserOptions": {
+        "project": ["./tsconfig.json"]
+    }
+  }
