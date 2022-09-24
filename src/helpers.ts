@@ -15,6 +15,7 @@ export interface MessageDetails {
   contract_info?: ContractInfo;
   sent_funds: any;
   data_response?: any;
+  isDecrypted: boolean;
 }
 
 export const getMainnetClient = async () => {
@@ -77,9 +78,9 @@ export const processMessages = async (
       continue;
 
     const newMsg = message.value.msg;
-    const keys = Object.keys(newMsg)
+    const keys = Object.keys(newMsg);
     console.log(newMsg[keys[0]]);
-    if (Object.keys(newMsg[keys[0]]).includes('msg')){
+    if (Object.keys(newMsg[keys[0]]).includes('msg')) {
       console.log();
       try {
         const decoded = atob(newMsg[keys[0]].msg);
@@ -90,13 +91,18 @@ export const processMessages = async (
       } catch (error) {
         console.error(error);
       }
-    };
+    }
 
+    const isDecrypted =
+      typeof message.value.msg === 'object' &&
+      message.value.msg !== null &&
+      !ArrayBuffer.isView(message.value.msg);
 
     if (result.code) {
       messages.push({
         msg: message.value.msg,
         sent_funds: message.value.sentFunds,
+        isDecrypted
       });
     } else {
       // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
@@ -108,12 +114,13 @@ export const processMessages = async (
         (a) => a.key === 'contract_address'
       )?.value;
 
-      if (!contractAddress) throw new Error('Couldnt get contract address jsonLogs');
+      if (!contractAddress)
+        throw new Error('Couldnt get contract address jsonLogs');
 
       const info = await client.query.compute.contractInfo(contractAddress);
 
       let dstring;
-      if (result.data[i]?.length)
+      if (result.data[i]?.length && isDecrypted)
         dstring = fromUtf8(
           MsgExecuteContractResponse.decode(result.data[i]).data
         );
@@ -124,6 +131,7 @@ export const processMessages = async (
         contract_info: info.ContractInfo,
         sent_funds: message.value.sentFunds,
         data_response: dstring && JSON.parse(dstring),
+        isDecrypted
       });
     }
   }

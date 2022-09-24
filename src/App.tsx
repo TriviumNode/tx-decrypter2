@@ -29,6 +29,7 @@ function App() {
   const [messageDetails, setMessageDetails] = useState<MessageDetails[]>([]);
   const [network, setNetwork] = useState('secret-4');
   const [loading, setLoading] = useState(false);
+  const [isDecrypted, setIsDecrypted] = useState(true);
 
   const handleLookup = async (testnet = false) => {
     try {
@@ -40,6 +41,7 @@ function App() {
       setLoading(true);
       setHashResult(undefined);
       setMessageDetails([]);
+      setIsDecrypted(true);
 
       let client;
 
@@ -146,10 +148,22 @@ function App() {
         </Col>
       </Row>
 
-      {!!hashResult?.code && <Row  className="mt-4">
-        <h3>Transaction Error:</h3>
-        <ReactJson src={hashResult?.jsonLog as object} name="Error Log" />
-        </Row>}
+      {!isDecrypted && (
+        <Row className="mt-4">
+          <h3>Failed to Decrypt</h3>
+          <h6 className="mx-2">
+            This may not be your transaction, or the encryption seed of Keplr
+            doesnt match the one used to encrypt this transaction.
+          </h6>
+        </Row>
+      )}
+
+      {!!hashResult?.code && (
+        <Row className="mt-4">
+          <h3>Transaction Error:</h3>
+          <ReactJson src={hashResult?.jsonLog as object} name="Error Log" />
+        </Row>
+      )}
 
       {!!messageDetails.length && (
         <Row className="mt-4">
@@ -159,6 +173,7 @@ function App() {
           </h6>
           <Accordion defaultActiveKey="0">
             {messageDetails.map((a, i) => {
+              if (!a.isDecrypted && isDecrypted) setIsDecrypted(false);
               return (
                 <Accordion.Item eventKey={i.toString()}>
                   <Accordion.Header>
