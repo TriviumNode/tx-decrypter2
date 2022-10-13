@@ -3166,6 +3166,11 @@ bfj@^7.0.2:
     hoopy "^0.1.4"
     tryer "^1.0.1"
 
+big-integer@1.6.51:
+  version "1.6.51"
+  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
+  integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
+
 big.js@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
@@ -8756,10 +8761,10 @@ secretjs@0.17.7:
     protobufjs "6.11.3"
     secure-random "1.1.2"
 
-secretjs@^1.4.0-alpha.4:
-  version "1.4.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.4.0-alpha.4.tgz#208cc52184f88d4e3eaa40f53cc7261ddb7f7252"
-  integrity sha512-uCl8g98E8NzuXaS5rcfqwBWy6qp5Nz3LSAOYDk2wS5u380nhH3MUg5Xw9WhdmvJhfNoYqfyYaSmvFprcUqvyDA==
+secretjs@^1.4.4:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.4.4.tgz#d7e6521b588cbeaa0f5ea4326a0c6158d7bb1899"
+  integrity sha512-AEQkLTgg2iijtB0rhdrqWjI9XtNYfjXg1xTv1pY86jNC42RTwzZPW0Y9Fy/9QN7PSJ9kqToK6TridFGl6zgIvw==
   dependencies:
     "@cosmjs/encoding" "0.27.1"
     "@cosmjs/math" "0.27.1"
@@ -8769,6 +8774,7 @@ secretjs@^1.4.0-alpha.4:
     "@noble/secp256k1" "1.6.3"
     "@osmonauts/helpers" "0.3.8"
     bech32 "2.0.0"
+    big-integer "1.6.51"
     bignumber.js "9.0.2"
     bip32 "2.0.6"
     bip39 "3.0.4"
