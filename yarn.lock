@@ -5285,6 +5285,11 @@ globby@^11.0.4, globby@^11.1.0:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
+google-protobuf@^3.14.0:
+  version "3.21.2"
+  resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.21.2.tgz#4580a2bea8bbb291ee579d1fefb14d6fa3070ea4"
+  integrity sha512-3MSOYFO5U9mPGikIYCzK0SaThypfGgS6bHqrUGXG3DPHCrb+txNqeEcns1W0lkGfk0rCyNXm7xB9rMxnCiZOoA==
+
 graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.4, graceful-fs@^4.2.6, graceful-fs@^4.2.9:
   version "4.2.10"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
@@ -8761,10 +8766,10 @@ secretjs@0.17.7:
     protobufjs "6.11.3"
     secure-random "1.1.2"
 
-secretjs@^1.4.4:
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.4.4.tgz#d7e6521b588cbeaa0f5ea4326a0c6158d7bb1899"
-  integrity sha512-AEQkLTgg2iijtB0rhdrqWjI9XtNYfjXg1xTv1pY86jNC42RTwzZPW0Y9Fy/9QN7PSJ9kqToK6TridFGl6zgIvw==
+secretjs@^1.4.5:
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.4.5.tgz#c94098faace9932c5a39cc4622a7510daac44274"
+  integrity sha512-WbHzcDTL8VW8WwVMAPXZAMj6QutXBe1gjLhyjOT3lAQX5zU1TKh2h8EpAxNrM0BfLPMPRC24qtngrrkVrdW2CA==
   dependencies:
     "@cosmjs/encoding" "0.27.1"
     "@cosmjs/math" "0.27.1"
@@ -8779,6 +8784,7 @@ secretjs@^1.4.4:
     bip32 "2.0.6"
     bip39 "3.0.4"
     curve25519-js "0.0.4"
+    google-protobuf "^3.14.0"
     is-gzip "2.0.0"
     miscreant "0.3.2"
     pako "2.0.4"
