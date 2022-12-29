@@ -1,6 +1,7 @@
-import { ContractInfo, fromUtf8, SecretNetworkClient, Tx } from 'secretjs';
-import { MsgExecuteContractResponse } from 'secretjs/dist/protobuf_stuff/secret/compute/v1beta1/msg';
+import { fromUtf8, SecretNetworkClient } from 'secretjs';
 import textEncoding from 'text-encoding';
+import { MsgExecuteContractResponse } from 'secretjs/dist/protobuf/secret/compute/v1beta1/msg';
+import { ContractInfo } from 'secretjs/dist/protobuf/secret/compute/v1beta1/types';
 
 export let secretJs: SecretNetworkClient;
 export let testnetJs: SecretNetworkClient;
@@ -28,8 +29,8 @@ export const getMainnetClient = async () => {
   );
   const [{ address: mainnetAddress }] = await mainnetSigner.getAccounts();
 
-  const secretjs = await SecretNetworkClient.create({
-    grpcWebUrl: process.env.REACT_APP_GRPC_URL,
+  const secretjs = new SecretNetworkClient({
+    url: process.env.REACT_APP_LCD_URL,
     chainId: process.env.REACT_APP_CHAIN_ID,
     wallet: mainnetSigner,
     walletAddress: mainnetAddress,
@@ -52,8 +53,8 @@ export const getPulsarClient = async () => {
   );
   const [{ address: pulsarAddress }] = await pulsarSigner.getAccounts();
 
-  const testnetjs = await SecretNetworkClient.create({
-    grpcWebUrl: process.env.REACT_APP_PULSAR_GRPC_URL,
+  const testnetjs = new SecretNetworkClient({
+    url: process.env.REACT_APP_PULSAR_LCD_URL,
     chainId: process.env.REACT_APP_PULSAR_CHAIN_ID,
     wallet: pulsarSigner,
     walletAddress: pulsarAddress,
@@ -67,7 +68,7 @@ export const getPulsarClient = async () => {
 };
 
 export const processMessages = async (
-  result: Tx,
+  result: any,
   client: SecretNetworkClient
 ) => {
   const messages: MessageDetails[] = [];
@@ -108,10 +109,10 @@ export const processMessages = async (
       // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
       //@ts-ignore
       const messageLog = result.jsonLog[i].events.find(
-        (a) => (a.type = 'message')
+        (a: any) => (a.type = 'message')
       )?.attributes;
       const contractAddress = messageLog?.find(
-        (a) => a.key === 'contract_address'
+        (a: any) => a.key === 'contract_address'
       )?.value;
 
       if (!contractAddress)
@@ -128,10 +129,10 @@ export const processMessages = async (
       messages.push({
         contract: contractAddress,
         msg: message.value.msg,
-        contract_info: info.ContractInfo,
+        contract_info: info.ContractInfo as unknown as ContractInfo,
         sent_funds: message.value.sentFunds,
         data_response: dstring && JSON.parse(dstring),
-        isDecrypted
+        isDecrypted,
       });
     }
   }

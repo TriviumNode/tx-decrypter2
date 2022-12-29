@@ -9,7 +9,6 @@ import {
   Row,
   Spinner,
 } from 'react-bootstrap';
-import { Tx } from 'secretjs';
 import { toast } from 'react-toastify';
 import ReactJson from 'react-json-view';
 import {
@@ -25,7 +24,7 @@ import {
 
 function App() {
   const [txHash, setTxHash] = useState('');
-  const [hashResult, setHashResult] = useState<Tx>();
+  const [hashResult, setHashResult] = useState<any>();
   const [messageDetails, setMessageDetails] = useState<MessageDetails[]>([]);
   const [network, setNetwork] = useState('secret-4');
   const [loading, setLoading] = useState(false);
@@ -146,6 +145,9 @@ function App() {
             tool.
           </h5>
         </Col>
+      </Row>
+      <Row className="mt-4 text-center">
+        <h6>Powered by <a href="https://secretnodes.com" target="_blank" rel="noreferrer noopener">SecretNodes</a></h6>
       </Row>
 
       {!isDecrypted && (
