@@ -8824,10 +8824,10 @@ secretjs@0.17.7:
     protobufjs "6.11.3"
     secure-random "1.1.2"
 
-secretjs@^1.6.4:
-  version "1.6.4"
-  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.6.4.tgz#355b0092b1c957ab0af3667ac7d82cd84a93790d"
-  integrity sha512-/n5G0cxCiKpx5v416uzmhohazqti64vNdcztPfscfOuJ4B1TWo22/EdyrDdSFcmo5CxTNcly48pi+GqwxyWNqQ==
+secretjs@^1.6.13:
+  version "1.6.13"
+  resolved "https://registry.yarnpkg.com/secretjs/-/secretjs-1.6.13.tgz#d73a5f68d869f7f4ab5a49621ff7dee2e876820f"
+  integrity sha512-eWQpARcEmHARl+EBZ7uWrlkTHotB464e/ZXgFp+uBD8coqHd8QucRrSuU9rTyGmfg92UYPnXOe1aKXs8M4XeSw==
   dependencies:
     "@cosmjs/encoding" "0.27.1"
     "@cosmjs/math" "0.27.1"
