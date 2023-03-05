@@ -20,6 +20,7 @@ import {
   testnetJs,
   getPulsarClient,
   suggestPulsar,
+  decodeAll,
 } from './helpers';
 
 function App() {
@@ -61,8 +62,10 @@ function App() {
       }
 
       const result = await client.query.getTx(txHash);
-      if (result) setHashResult(result);
-      else throw new Error('No Result Returned');
+      if (result) {
+        decodeAll(result.events);
+        setHashResult(result);
+      } else throw new Error('No Result Returned');
 
       const messages = await processMessages(result, client);
       setMessageDetails(messages);
@@ -147,7 +150,16 @@ function App() {
         </Col>
       </Row>
       <Row className="mt-4 text-center">
-        <h6>Powered by <a href="https://secretnodes.com" target="_blank" rel="noreferrer noopener">SecretNodes</a></h6>
+        <h6>
+          Powered by{' '}
+          <a
+            href="https://secretnodes.com"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            SecretNodes
+          </a>
+        </h6>
       </Row>
 
       {!isDecrypted && (

@@ -103,7 +103,7 @@ export const processMessages = async (
       messages.push({
         msg: message.value.msg,
         sent_funds: message.value.sentFunds,
-        isDecrypted
+        isDecrypted,
       });
     } else {
       // eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
@@ -188,3 +188,20 @@ export const suggestPulsar = async () => {
     features: ['secretwasm', 'ibc-transfer', 'ibc-go'],
   });
 };
+
+const base64regex =
+  /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+
+export const isBase64 = (str: string) => base64regex.test(str);
+
+export function decodeAll(obj: any) {
+  for (const k in obj) {
+    // if (!obj.hasOwnProperty(k)) continue;
+
+    if (typeof obj[k] === 'object' && obj[k] !== null) decodeAll(obj[k]);
+    if (typeof obj[k] === 'string' && obj[k] !== null) {
+      if (k === 'type') continue;
+      if (isBase64(obj[k])) obj[k] = atob(obj[k]);
+    }
+  }
+}
