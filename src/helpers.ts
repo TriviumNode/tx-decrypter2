@@ -4,6 +4,7 @@ import { MsgExecuteContractResponse } from 'secretjs/dist/protobuf/secret/comput
 import { ContractInfo } from 'secretjs/dist/protobuf/secret/compute/v1beta1/types';
 
 export let secretJs: SecretNetworkClient;
+export let snodesClient: SecretNetworkClient;
 export let testnetJs: SecretNetworkClient;
 export let mainnetWalletAddress: string;
 export let pulsarWalletAddress: string;
@@ -41,6 +42,18 @@ export const getMainnetClient = async () => {
 
   secretJs = secretjs;
   mainnetWalletAddress = mainnetAddress;
+
+  const snodesclient = new SecretNetworkClient({
+    url: process.env.REACT_APP_PROXY_URL,
+    chainId: process.env.REACT_APP_CHAIN_ID,
+    wallet: mainnetSigner,
+    walletAddress: mainnetAddress,
+    encryptionUtils: window.keplr.getEnigmaUtils(
+      process.env.REACT_APP_CHAIN_ID
+    ),
+  });
+
+  snodesClient = snodesclient;
 };
 
 export const getPulsarClient = async () => {
@@ -74,11 +87,13 @@ export const processMessages = async (
   const messages: MessageDetails[] = [];
   for (let i = 0; i < result.tx.body.messages.length; i++) {
     const message = result.tx.body.messages[i];
-
-    if (message.typeUrl !== '/secret.compute.v1beta1.MsgExecuteContract')
+    if (
+      message.typeUrl !== '/secret.compute.v1beta1.MsgExecuteContract' &&
+      message['@type'] !== '/secret.compute.v1beta1.MsgExecuteContract'
+    )
       continue;
-
-    const newMsg = message.value.msg;
+    console.log(message)
+    const newMsg = message.msg;
     const keys = Object.keys(newMsg);
     console.log(newMsg[keys[0]]);
     if (Object.keys(newMsg[keys[0]]).includes('msg')) {
@@ -95,14 +110,14 @@ export const processMessages = async (
     }
 
     const isDecrypted =
-      typeof message.value.msg === 'object' &&
-      message.value.msg !== null &&
-      !ArrayBuffer.isView(message.value.msg);
-
+      typeof message.msg === 'object' &&
+      message.msg !== null &&
+      !ArrayBuffer.isView(message.msg);
+    console.log('isDecrypted', isDecrypted);
     if (result.code) {
       messages.push({
-        msg: message.value.msg,
-        sent_funds: message.value.sentFunds,
+        msg: message.msg,
+        sent_funds: message.sentFunds,
         isDecrypted,
       });
     } else {
@@ -117,8 +132,11 @@ export const processMessages = async (
 
       if (!contractAddress)
         throw new Error('Couldnt get contract address jsonLogs');
-
-      const info = await client.query.compute.contractInfo(contractAddress);
+      console.log('contractAddress', contractAddress);
+      const info = await client.query.compute.contractInfo({
+        contract_address: contractAddress,
+      });
+      console.log(info);
 
       let dstring;
       if (result.data[i]?.length && isDecrypted)
@@ -128,9 +146,9 @@ export const processMessages = async (
 
       messages.push({
         contract: contractAddress,
-        msg: message.value.msg,
+        msg: message.msg,
         contract_info: info.ContractInfo as unknown as ContractInfo,
-        sent_funds: message.value.sentFunds,
+        sent_funds: message.sentFunds,
         data_response: dstring && JSON.parse(dstring),
         isDecrypted,
       });

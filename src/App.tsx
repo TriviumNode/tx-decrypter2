@@ -21,6 +21,7 @@ import {
   getPulsarClient,
   suggestPulsar,
   decodeAll,
+  snodesClient,
 } from './helpers';
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
       setIsDecrypted(true);
 
       let client;
+      let proxyClient;
 
       if (testnet) {
         await suggestPulsar();
@@ -52,6 +54,7 @@ function App() {
           await getPulsarClient();
         }
         client = testnetJs;
+        proxyClient = testnetJs;
       } else {
         await window.keplr.enable(process.env.REACT_APP_CHAIN_ID);
 
@@ -59,9 +62,10 @@ function App() {
           await getMainnetClient();
         }
         client = secretJs;
+        proxyClient = snodesClient;
       }
 
-      const result = await client.query.getTx(txHash);
+      const result = await proxyClient.query.getTx(txHash);
       if (result) {
         decodeAll(result.events);
         setHashResult(result);
