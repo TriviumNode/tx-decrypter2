@@ -154,16 +154,8 @@ function App() {
         </Col>
       </Row>
       <Row className="mt-4 text-center">
-        <h6>
-          Powered by{' '}
-          <a
-            href="https://secretnodes.com"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            SecretNodes
-          </a>
-        </h6>
+        <h6 style={{ color: 'red', marginBottom: 0 }}>Note: Limited Functionality</h6>
+        <p>This tool will only be able to decrypt recent transactions. Older transactions are not available.</p>
       </Row>
 
       {!isDecrypted && (
