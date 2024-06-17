@@ -147,7 +147,7 @@ export const processMessages = async (
       messages.push({
         contract: contractAddress,
         msg: message.msg,
-        contract_info: info.ContractInfo as unknown as ContractInfo,
+        contract_info: info.contract_info as unknown as ContractInfo,
         sent_funds: message.sentFunds,
         data_response: dstring && JSON.parse(dstring),
         isDecrypted,
